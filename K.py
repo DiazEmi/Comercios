@@ -21,6 +21,8 @@ list_bulto=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','1
 box_var = []
 box_unit = []
 box_menor = []
+box_mayor = []
+box_bulto = []
 leng = len(list_names) 
 
 
@@ -62,6 +64,22 @@ for i in range(leng):
     box_menor.append(var)
     Box_textd1 = tkinter.Entry(Price_window, textvariable = box_menor[i], width=10)
     Box_textd1.grid(row = i+1, column = 3, sticky="W")
+
+for i in range(leng):
+    var = tkinter.StringVar()
+    var.set(list_mayor[i])
+    var.trace("w", text00)
+    box_mayor.append(var)
+    Box_textd1 = tkinter.Entry(Price_window, textvariable = box_mayor[i], width=10)
+    Box_textd1.grid(row = i+1, column = 4, sticky="W")
+
+for i in range(leng):
+    var = tkinter.StringVar()
+    var.set(list_bulto[i])
+    var.trace("w", text00)
+    box_bulto.append(var)
+    Box_textd1 = tkinter.Entry(Price_window, textvariable = box_bulto[i], width=10)
+    Box_textd1.grid(row = i+1, column = 5, sticky="W")
     
 Label_Title = tkinter.Label(Price_window, text = "   Producto")
 Label_Title.grid(row = 0, column = 0)
