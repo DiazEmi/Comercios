@@ -1,23 +1,34 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Aug 11 21:23:41 2021
-
-@author: emili
-"""
 
 import tkinter
+import pymongo
+
+client = pymongo.MongoClient("mongodb+srv://yo:yolo@cluster0.0mjgl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+mydb = client["Negocio"]
+mycol = mydb["precios"]
 
 
 Price_window = tkinter.Tk()
 Price_window.geometry("1000x1500")
 Price_window.title("Cambio de precios")
-list_names=['Papa blanca','Papa Negra','Papa roja','Papa lavada','Cebolla','Cebolla morada','Verdeo','Zanahoria','Zanahoria Fraccionada','Zapallito','Berenjena blanca','4','1','2','3','4']
-list_unit=['20','20','20','16','18','15','1.5','13','18','25','16','12','13','14','15','16']
-list_cost=['300','400','500','600','600','500','100','600','1200','1000','11','12','13','14','15','16']
-list_menor=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
-list_mayor=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
-list_bulto=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
- 
+
+c=[]
+list_names=[]
+list_unit=[]
+list_cost=[]
+list_menor=[]
+list_mayor=[]
+list_bulto=[]
+
+item_details = mycol.find()
+for item in item_details:
+    c.append(item['_id'])
+    list_names.append(item['nombre'])
+    list_cost.append(item['precioC'])
+    list_menor.append((item['preciom']))
+    list_mayor.append(item['precioM'])
+    list_bulto.append(item['precioB'])
+    list_unit.append(item['Kg'])
+    
 box_var = []
 box_unit = []
 box_menor = []
@@ -38,7 +49,10 @@ def text00(*args):
             print(str(p)+ "++" + str(f))
             list_cost[k]=p
             f=float(box_unit[k].get())
-            box_menor[k].set((p/f)*1.6  )
+            box_menor[k].set((p/f)*1.6)
+            box_mayor[k].set((p/f)*1.2)
+            box_bulto[k].set((p)*1.5)
+            x = mycol.update_one({'_id' : c[k] }, {'$set':{'precioC':p}})
 
 for i in range(leng):
     var = tkinter.StringVar()
