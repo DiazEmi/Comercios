@@ -11,11 +11,13 @@ from datetime import date
 
 hora = datetime.now()
 today = date.today() 
-
+fecha = str(hora.month)+":"+str(hora.year)
 
 client = pymongo.MongoClient("mongodb+srv://yo:yolo@cluster0.0mjgl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 mydb = client["Negocio"]
 mycol = mydb["diario"]
+mynewcol = mydb[fecha]
+
 
 if hora.hour <= 15:
     turno = 'mañana'
@@ -227,7 +229,7 @@ def Update():
             iva=0
     dic={'dia':today.day,'mes':today.month,'año':today.year,'cajero':cajero,'ventas':total,'efectivo':efe,'debitos':debi,'Turno':turno}
     print(dic)
-    mycol.insert_one(dic)
+    mynewcol.insert_one(dic)
     
     
     
