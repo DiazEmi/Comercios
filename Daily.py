@@ -12,12 +12,14 @@ from datetime import date
 hora = datetime.now()
 today = date.today() 
 fecha = str(hora.month)+":"+str(hora.year)
+fecha_gasto = str(fecha) + ":gastos"
 
 client = pymongo.MongoClient("mongodb+srv://yo:yolo@cluster0.0mjgl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 mydb = client["Negocio"]
 mycol = mydb["diario"]
 mynewcol = mydb[fecha]
-
+col_gastos = mydb[fecha_gasto]
+col_cliente = mydb["cuentas corrientes"]
 
 if hora.hour <= 15:
     turno = 'mañana'
@@ -188,6 +190,7 @@ def Update():
     iva=''
     for j in range(6):
         va = var_monto_gastos[j].get()
+        gast = var_gastos[j].get()
         if va != '':
             iva=int(va)
         else:
@@ -196,9 +199,12 @@ def Update():
             f = str(var_gastos[j].get())
             dic[f]=iva
             total = total + iva
+            Gasto={'dia':today.day,'mes':today.month,'año':today.year,'gasto':gast,'cantidad':iva,'Turno':turno}
+            col_gastos.insert_one(Gasto)
             iva=0
     for j in range(6):
         va = var_montos_cobros[j].get()
+        Cliente = var_cobros[j].get()
         if va != '':
             iva=int(va)
         else:
@@ -206,9 +212,12 @@ def Update():
         if (iva)!=0:
             dic[str(var_cobros[j].get())]=iva
             total = total + iva
+            cliente={'dia':today.day,'mes':today.month,'año':today.year,'monto':iva,'cliente':Cliente,'Turno':turno}
+            col_cliente.insert_one(cliente)
             iva=0
     for j in range(6):
         va = var_montos_pagos[j].get()
+        Cliente = var_cobros[j].get()
         if va != '':
             iva=int(va)
         else:
@@ -216,6 +225,8 @@ def Update():
         if (iva)!=0:
             dic[str(var_pagos[j].get())]=iva
             total = total - iva
+            cliente={'dia':today.day,'mes':today.month,'año':today.year,'monto':-iva,'cliente':Cliente,'Turno':turno}
+            col_cliente.insert_one(cliente)
             iva=0
     for j in range(6):
         va = var_montos_empleado[j].get()
